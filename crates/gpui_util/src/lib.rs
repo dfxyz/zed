@@ -32,8 +32,19 @@ pub fn new_std_command(program: impl AsRef<OsStr>) -> std::process::Command {
 }
 
 #[cfg(target_os = "windows")]
+const WINDOWS_SHELL_PREFERENCES: &[&str] = &["zsh.exe", "bash.exe"];
+
+#[cfg(target_os = "windows")]
 pub fn get_windows_system_shell() -> String {
     use std::path::PathBuf;
+
+    if let Some(shell) = WINDOWS_SHELL_PREFERENCES
+        .iter()
+        .find_map(|name| which::which_global(name).ok())
+    {
+        log::info!("Found preferred shell: {}", shell.display());
+        return shell.to_string_lossy().into_owned();
+    }
 
     fn find_pwsh_in_programfiles(find_alternate: bool, find_preview: bool) -> Option<PathBuf> {
         #[cfg(target_pointer_width = "64")]
