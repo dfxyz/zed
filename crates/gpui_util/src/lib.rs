@@ -33,6 +33,9 @@ pub fn new_std_command(program: impl AsRef<OsStr>) -> std::process::Command {
 }
 
 #[cfg(target_os = "windows")]
+const WINDOWS_SHELL_PREFERENCES: &[&str] = &["zsh.exe", "bash.exe"];
+
+#[cfg(target_os = "windows")]
 pub fn get_powershell() -> Option<String> {
     use std::path::PathBuf;
 
@@ -139,6 +142,14 @@ pub fn get_powershell() -> Option<String> {
 
 #[cfg(target_os = "windows")]
 pub fn get_windows_system_shell() -> String {
+    if let Some(shell) = WINDOWS_SHELL_PREFERENCES
+        .iter()
+        .find_map(|name| which::which_global(name).ok())
+    {
+        log::info!("Found preferred shell: {}", shell.display());
+        return shell.to_string_lossy().into_owned();
+    }
+
     static CMD: std::sync::LazyLock<String> = std::sync::LazyLock::new(|| {
         log::warn!("Powershell not found, falling back to `cmd`");
         let system_root = std::env::var_os("SystemRoot").unwrap_or_else(|| "C:\\Windows".into());
