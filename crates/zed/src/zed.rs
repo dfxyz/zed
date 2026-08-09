@@ -6005,11 +6005,11 @@ mod tests {
         cx.text_system()
             .add_fonts(vec![
                 Assets
-                    .load("fonts/lilex/Lilex-Regular.ttf")
+                    .load("fonts/fira-noto-sc/FiraNotoSC-Regular.ttf")
                     .unwrap()
                     .unwrap(),
                 Assets
-                    .load("fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf")
+                    .load("fonts/fira-noto-sc/FiraNotoSC-Bold.ttf")
                     .unwrap()
                     .unwrap(),
             ])

@@ -224,8 +224,7 @@ let
         ZSTD_SYS_USE_PKG_CONFIG = true;
         FONTCONFIG_FILE = makeFontsConf {
           fontDirectories = [
-            ../assets/fonts/lilex
-            ../assets/fonts/ibm-plex-sans
+            ../assets/fonts/fira-noto-sc
           ];
         };
         ZED_UPDATE_EXPLANATION = "Zed has been installed using Nix. Auto-updates have thus been disabled.";

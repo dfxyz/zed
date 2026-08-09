@@ -384,7 +384,7 @@ Note that a save will be triggered when an unsaved tab is closed, even if this i
 
 - Description: The name of a font to use for rendering text in the editor.
 - Setting: `buffer_font_family`
-- Default: `.ZedMono`. This currently aliases to [Lilex](https://lilex.myrt.co).
+- Default: `.ZedMono`. This currently aliases to Fira Noto SC.
 
 **Options**
 
@@ -442,7 +442,7 @@ For example, to use `Nerd Font` as a fallback, add the following to your setting
 
 - Description: The default font size for text in the editor.
 - Setting: `buffer_font_size`
-- Default: `15`
+- Default: `14`
 
 **Options**
 
@@ -5851,7 +5851,7 @@ Float values between `0.0` and `0.9`, where:
 
 - Description: The name of the font to use for text in the UI.
 - Setting: `ui_font_family`
-- Default: `.ZedSans`. This currently aliases to [IBM Plex](https://www.ibm.com/plex/).
+- Default: `.ZedSans`. This currently aliases to Fira Noto SC.
 
 **Options**
 
