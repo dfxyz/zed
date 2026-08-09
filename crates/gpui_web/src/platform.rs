@@ -176,7 +176,7 @@ impl WebPlatform {
         ));
         let background_executor = BackgroundExecutor::new(dispatcher.clone());
         let foreground_executor = ForegroundExecutor::new(dispatcher.clone());
-        let text_system = Arc::new(WebTextSystem::new("IBM Plex Sans", canvas_font_fallback));
+        let text_system = Arc::new(WebTextSystem::new("Fira Noto SC", canvas_font_fallback));
         let text_system: Arc<dyn PlatformTextSystem> = text_system;
         let active_display: Rc<dyn PlatformDisplay> =
             Rc::new(WebDisplay::new(browser_window.clone()));
