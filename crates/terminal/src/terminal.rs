@@ -2727,7 +2727,7 @@ impl Terminal {
                             .push_back(InternalEvent::SetSelection(Some(selection)));
                     }
                 }
-                #[cfg(any(target_os = "linux", target_os = "freebsd"))]
+                #[cfg(any(target_os = "linux", target_os = "freebsd", target_os = "windows"))]
                 MouseButton::Middle => {
                     if mode == MouseInputMode::ReportToTerminal
                         && let Some(item) = cx.read_from_primary()
