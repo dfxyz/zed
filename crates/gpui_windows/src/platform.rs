@@ -833,6 +833,14 @@ impl Platform for WindowsPlatform {
         read_from_clipboard()
     }
 
+    fn read_from_primary(&self) -> Option<ClipboardItem> {
+        read_from_clipboard()
+    }
+
+    fn write_to_primary(&self, item: ClipboardItem) {
+        write_to_clipboard(item);
+    }
+
     fn write_credentials(&self, url: &str, username: &str, password: &[u8]) -> Task<Result<()>> {
         // CredWriteW rejects larger blobs with the opaque RPC error
         // 0x800706F7 "The stub received bad data", so fail with a clear

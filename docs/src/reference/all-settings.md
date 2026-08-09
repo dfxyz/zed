@@ -3297,9 +3297,9 @@ Configuration for various AI model providers including API URLs and authenticati
 
 Positive `integer` values or `null` for unlimited tabs
 
-## Middle Click Paste (Linux only)
+## Middle Click Paste
 
-- Description: Enable middle-click paste on Linux
+- Description: Enable middle-click paste on Linux and Windows
 - Setting: `middle_click_paste`
 - Default: `true`
 

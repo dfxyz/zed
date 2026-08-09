@@ -890,7 +890,7 @@ impl EditorElement {
 
         if end_selection && pending_nonempty_selections {
             cx.stop_propagation();
-        } else if cfg!(any(target_os = "linux", target_os = "freebsd"))
+        } else if cfg!(any(target_os = "linux", target_os = "freebsd", target_os = "windows"))
             && event.button == MouseButton::Middle
         {
             #[allow(
@@ -902,7 +902,7 @@ impl EditorElement {
                 return;
             }
 
-            #[cfg(any(target_os = "linux", target_os = "freebsd"))]
+            #[cfg(any(target_os = "linux", target_os = "freebsd", target_os = "windows"))]
             if EditorSettings::get_global(cx).middle_click_paste {
                 if let Some(text) = cx.read_from_primary().and_then(|item| item.text()) {
                     let point_for_position = position_map.point_for_position(event.position);

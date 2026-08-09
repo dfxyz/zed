@@ -10045,7 +10045,7 @@ fn language_settings_data() -> Box<[SettingsPageItem]> {
             }),
             SettingsPageItem::SettingItem(SettingItem {
                 title: "Middle Click Paste",
-                description: "Enable middle-click paste on Linux.",
+                description: "Enable middle-click paste on Linux and Windows.",
                 field: Box::new(SettingField {
                     organization_override: None,
                     json_path: Some("languages.$(language).editor.middle_click_paste"),
