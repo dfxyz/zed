@@ -26,7 +26,7 @@
   // 9. "None"
   "base_keymap": "Zed",
   // The name of a font to use for rendering text in the editor
-  // ".ZedMono" currently aliases to Lilex
+  // ".ZedMono" currently aliases to Fira Noto SC
   // but this may change in the future.
   "buffer_font_family": ".ZedMono",
   // Set the buffer text's font fallbacks, this will be merged with
@@ -38,7 +38,7 @@
     // "calt": false
   },
   // The default font size for text in the editor
-  "buffer_font_size": 15,
+  "buffer_font_size": 14,
   // The weight of the editor font in standard CSS units from 100 to 900.
   "buffer_font_weight": 400,
   // Set the buffer's line height.
@@ -54,7 +54,7 @@
   "buffer_line_height": "comfortable",
   // The name of a font to use for rendering text in the UI
   // You can set this to ".SystemUIFont" to use the system font
-  // ".ZedSans" currently aliases to "IBM Plex Sans", but this may
+  // ".ZedSans" currently aliases to "Fira Noto SC", but this may
   // change in the future
   "ui_font_family": ".ZedSans",
   // Set the UI's font fallbacks, this will be merged with the platform's

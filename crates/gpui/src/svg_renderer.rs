@@ -310,8 +310,8 @@ fn rasterize_tree(tree: &usvg::Tree, size: SvgSize) -> Result<Pixmap, usvg::Erro
 
 fn load_bundled_fonts(asset_source: &dyn AssetSource, db: &mut usvg::fontdb::Database) {
     let font_paths = [
-        "fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf",
-        "fonts/lilex/Lilex-Regular.ttf",
+        "fonts/fira-noto-sc/FiraNotoSC-Regular.ttf",
+        "fonts/fira-noto-sc/FiraNotoSC-Bold.ttf",
     ];
     for path in font_paths {
         match asset_source.load(path) {
@@ -329,12 +329,12 @@ fn fix_generic_font_families(db: &mut usvg::fontdb::Database) {
     use usvg::fontdb::{Family, Query};
 
     let families_and_fallbacks: &[(Family<'_>, &str)] = &[
-        (Family::SansSerif, "IBM Plex Sans"),
+        (Family::SansSerif, "Fira Noto SC"),
         // No serif font bundled; use sans-serif as best available fallback.
-        (Family::Serif, "IBM Plex Sans"),
-        (Family::Monospace, "Lilex"),
-        (Family::Cursive, "IBM Plex Sans"),
-        (Family::Fantasy, "IBM Plex Sans"),
+        (Family::Serif, "Fira Noto SC"),
+        (Family::Monospace, "Fira Noto SC"),
+        (Family::Cursive, "Fira Noto SC"),
+        (Family::Fantasy, "Fira Noto SC"),
     ];
 
     for (family, fallback_name) in families_and_fallbacks {
@@ -360,9 +360,10 @@ mod tests {
     use super::*;
     use usvg::fontdb::{Database, Family, Query};
 
-    const IBM_PLEX_REGULAR: &[u8] =
-        include_bytes!("../../../assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf");
-    const LILEX_REGULAR: &[u8] = include_bytes!("../../../assets/fonts/lilex/Lilex-Regular.ttf");
+    const FIRA_NOTO_SC_REGULAR: &[u8] =
+        include_bytes!("../../../assets/fonts/fira-noto-sc/FiraNotoSC-Regular.ttf");
+    const FIRA_NOTO_SC_BOLD: &[u8] =
+        include_bytes!("../../../assets/fonts/fira-noto-sc/FiraNotoSC-Bold.ttf");
 
     #[test]
     fn renders_parsed_svg_at_requested_size() -> Result<()> {
@@ -394,16 +395,16 @@ mod tests {
 
     fn db_with_bundled_fonts() -> Database {
         let mut db = Database::new();
-        db.load_font_data(IBM_PLEX_REGULAR.to_vec());
-        db.load_font_data(LILEX_REGULAR.to_vec());
+        db.load_font_data(FIRA_NOTO_SC_REGULAR.to_vec());
+        db.load_font_data(FIRA_NOTO_SC_BOLD.to_vec());
         db
     }
 
     #[test]
     fn text_with_split_glyph_clusters_in_mixed_fonts_does_not_panic() {
         let mut db = Database::new();
-        db.load_font_data(IBM_PLEX_REGULAR.to_vec());
-        db.load_font_data(LILEX_REGULAR.to_vec());
+        db.load_font_data(FIRA_NOTO_SC_REGULAR.to_vec());
+        db.load_font_data(FIRA_NOTO_SC_BOLD.to_vec());
         let options = usvg::Options {
             fontdb: std::sync::Arc::new(db),
             ..Default::default()
@@ -412,10 +413,10 @@ mod tests {
         // A base letter followed by a stack of combining marks. Under HarfBuzz's
         // default cluster merging every mark glyph shares the base's byte index,
         // which is the "glyph splitting" condition that triggered the panic. The
-        // chunk must use two different fonts so the buggy merge path runs.
+        // chunk must use two different faces so the buggy merge path runs.
         let zalgo = "e\u{0301}\u{0302}\u{0303}\u{0304}\u{0306}\u{0307}\u{0308}\u{030a}";
         let svg = format!(
-            r#"<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><text font-family="Lilex" font-size="32">{zalgo}<tspan font-family="IBM Plex Sans">{zalgo}</tspan></text></svg>"#
+            r#"<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><text font-family="Fira Noto SC" font-size="32">{zalgo}<tspan font-family="Fira Noto SC" font-weight="700">{zalgo}</tspan></text></svg>"#
         );
 
         // Before the fix this aborts via panic with a message like
@@ -481,34 +482,35 @@ mod tests {
     }
 
     #[test]
-    fn test_select_emoji_font_skips_family_without_glyph() {
+    fn test_select_emoji_font_skips_faces_without_glyph() {
         let mut db = db_with_bundled_fonts();
 
-        let ibm_plex_sans = db
+        let fira_regular = db
             .query(&usvg::fontdb::Query {
-                families: &[usvg::fontdb::Family::Name("IBM Plex Sans")],
+                families: &[usvg::fontdb::Family::Name("Fira Noto SC")],
                 weight: usvg::fontdb::Weight(400),
                 stretch: usvg::fontdb::Stretch::Normal,
                 style: usvg::fontdb::Style::Normal,
             })
             .unwrap();
-        let lilex = db
+        let fira_bold = db
             .query(&usvg::fontdb::Query {
-                families: &[usvg::fontdb::Family::Name("Lilex")],
-                weight: usvg::fontdb::Weight(400),
+                families: &[usvg::fontdb::Family::Name("Fira Noto SC")],
+                weight: usvg::fontdb::Weight(700),
                 stretch: usvg::fontdb::Stretch::Normal,
                 style: usvg::fontdb::Style::Normal,
             })
             .unwrap();
-        let selected = select_emoji_font('│', &[], &db, &["IBM Plex Sans", "Lilex"]).unwrap();
+        let selected = select_emoji_font('A', &[], &db, &["Fira Noto SC"]).unwrap();
 
-        assert_eq!(selected, lilex);
-        assert!(!font_has_char(&db, ibm_plex_sans, '│'));
-        assert!(font_has_char(&db, selected, '│'));
+        assert_eq!(selected, fira_regular);
+        assert!(font_has_char(&db, selected, 'A'));
+        assert_eq!(select_emoji_font('😀', &[], &db, &["Fira Noto SC"]), None);
+        assert!(fira_regular != fira_bold);
     }
 
     #[test]
-    fn fix_generic_font_families_monospace_resolves_to_lilex() {
+    fn fix_generic_font_families_monospace_resolves_to_bundled_font() {
         let mut db = db_with_bundled_fonts();
         fix_generic_font_families(&mut db);
 
@@ -519,8 +521,10 @@ mod tests {
         let id = db.query(&query).expect("Monospace should resolve");
         let face = db.face(id).expect("Face should exist");
         assert!(
-            face.families.iter().any(|(name, _)| name.contains("Lilex")),
-            "Monospace should map to Lilex, got {:?}",
+            face.families
+                .iter()
+                .any(|(name, _)| name.contains("Fira Noto SC")),
+            "Monospace should map to Fira Noto SC, got {:?}",
             face.families
         );
     }

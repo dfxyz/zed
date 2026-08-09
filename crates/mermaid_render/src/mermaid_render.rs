@@ -188,10 +188,10 @@ mod tests {
 
     #[test]
     fn mermaid_diagram_with_mixed_weight_combining_marks_does_not_panic() {
-        const IBM_PLEX_REGULAR: &[u8] =
-            include_bytes!("../../../assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf");
-        const IBM_PLEX_SEMIBOLD: &[u8] =
-            include_bytes!("../../../assets/fonts/ibm-plex-sans/IBMPlexSans-SemiBold.ttf");
+        const FIRA_NOTO_SC_REGULAR: &[u8] =
+            include_bytes!("../../../assets/fonts/fira-noto-sc/FiraNotoSC-Regular.ttf");
+        const FIRA_NOTO_SC_BOLD: &[u8] =
+            include_bytes!("../../../assets/fonts/fira-noto-sc/FiraNotoSC-Bold.ttf");
 
         let zalgo = "Ne\u{0301}\u{0302}\u{0303}\u{0304}\u{0306}\u{0307}\u{0308}\u{030a}d";
         let source = format!("flowchart TD\n  A[\"**{zalgo}** {zalgo}\"]");
@@ -199,9 +199,9 @@ mod tests {
             .expect("mermaid diagram should render to SVG");
 
         let mut db = usvg::fontdb::Database::new();
-        db.load_font_data(IBM_PLEX_REGULAR.to_vec());
-        db.load_font_data(IBM_PLEX_SEMIBOLD.to_vec());
-        db.set_sans_serif_family("IBM Plex Sans");
+        db.load_font_data(FIRA_NOTO_SC_REGULAR.to_vec());
+        db.load_font_data(FIRA_NOTO_SC_BOLD.to_vec());
+        db.set_sans_serif_family("Fira Noto SC");
         let options = usvg::Options {
             fontdb: std::sync::Arc::new(db),
             ..Default::default()

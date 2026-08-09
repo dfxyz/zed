@@ -7,28 +7,11 @@ use gpui::App;
 pub fn load_fonts(cx: &App) -> bool {
     let fonts = [
         Cow::Borrowed(
-            include_bytes!("../../../../assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf")
+            include_bytes!("../../../../assets/fonts/fira-noto-sc/FiraNotoSC-Regular.ttf")
                 .as_slice(),
         ),
         Cow::Borrowed(
-            include_bytes!("../../../../assets/fonts/ibm-plex-sans/IBMPlexSans-Italic.ttf")
-                .as_slice(),
-        ),
-        Cow::Borrowed(
-            include_bytes!("../../../../assets/fonts/ibm-plex-sans/IBMPlexSans-SemiBold.ttf")
-                .as_slice(),
-        ),
-        Cow::Borrowed(
-            include_bytes!("../../../../assets/fonts/ibm-plex-sans/IBMPlexSans-SemiBoldItalic.ttf")
-                .as_slice(),
-        ),
-        Cow::Borrowed(
-            include_bytes!("../../../../assets/fonts/lilex/Lilex-Regular.ttf").as_slice(),
-        ),
-        Cow::Borrowed(include_bytes!("../../../../assets/fonts/lilex/Lilex-Bold.ttf").as_slice()),
-        Cow::Borrowed(include_bytes!("../../../../assets/fonts/lilex/Lilex-Italic.ttf").as_slice()),
-        Cow::Borrowed(
-            include_bytes!("../../../../assets/fonts/lilex/Lilex-BoldItalic.ttf").as_slice(),
+            include_bytes!("../../../../assets/fonts/fira-noto-sc/FiraNotoSC-Bold.ttf").as_slice(),
         ),
     ];
     if let Err(error) = cx.text_system().add_fonts(fonts.into()) {
