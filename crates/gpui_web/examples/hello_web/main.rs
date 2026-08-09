@@ -440,7 +440,7 @@ fn main() {
             if let Err(error) = cx
                 .text_system()
                 .add_fonts(vec![Cow::Borrowed(include_bytes!(
-                    "../../../../assets/fonts/ibm-plex-sans/IBMPlexSans-Regular.ttf"
+                    "../../../../assets/fonts/fira-noto-sc/FiraNotoSC-Regular.ttf"
                 ))])
             {
                 web_sys::console::error_1(
