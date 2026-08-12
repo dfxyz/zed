@@ -1,4 +1,4 @@
-use std::path::Path;
+use std::path::{Path, PathBuf};
 
 use anyhow::{Context as _, Result};
 use collections::HashMap;
@@ -205,6 +205,23 @@ async fn spawn_and_read_fd(
 }
 
 #[cfg(windows)]
+fn find_cygpath() -> Option<PathBuf> {
+    which::which("cygpath").ok()
+}
+
+#[cfg(windows)]
+async fn windows_path_to_posix(cygpath: &Path, path: &Path) -> Result<String> {
+    let path_string = path.to_string_lossy();
+    let output = crate::command::new_command(cygpath)
+        .arg("-u")
+        .arg(path_string.as_ref())
+        .output()
+        .await
+        .with_context(|| format!("running {cygpath:?} -u on {path:?}"))?;
+    Ok(String::from_utf8_lossy(&output.stdout).trim().to_owned())
+}
+
+#[cfg(windows)]
 async fn capture_windows(
     shell_path: &Path,
     args: &[String],
@@ -224,6 +241,26 @@ async fn capture_windows(
         directory_string
     };
     let zed_path_string = zed_path.display().to_string();
+    let (directory_string, zed_path_string) = if matches!(
+        shell_kind,
+        ShellKind::Posix
+            | ShellKind::Csh
+            | ShellKind::Tcsh
+            | ShellKind::Rc
+            | ShellKind::Fish
+            | ShellKind::Xonsh
+    ) {
+        if let Some(cygpath) = find_cygpath() {
+            (
+                windows_path_to_posix(&cygpath, Path::new(&directory_string)).await?,
+                windows_path_to_posix(&cygpath, &zed_path).await?,
+            )
+        } else {
+            (directory_string, zed_path_string)
+        }
+    } else {
+        (directory_string, zed_path_string)
+    };
     let quote_for_shell = |value: &str| {
         shell_kind
             .try_quote(value)
