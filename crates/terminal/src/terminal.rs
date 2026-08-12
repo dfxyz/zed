@@ -643,6 +643,9 @@ actions!(
         ToggleViMode,
         /// Selects all text in the terminal.
         SelectAll,
+        /// Opens the project root in the default external terminal.
+        #[cfg(windows)]
+        OpenExternalTerminal,
     ]
 );
 
