@@ -32,6 +32,8 @@ use std::{
     time::Duration,
 };
 use task::TaskId;
+#[cfg(windows)]
+use terminal::OpenExternalTerminal;
 use terminal::{
     Clear, Copy, Event, HoveredWord, MaybeNavigationTarget, Modes, Paste, PasteText, Point, Range,
     ScrollLineDown, ScrollLineUp, ScrollPageDown, ScrollPageUp, ScrollToBottom, ScrollToTop,
@@ -111,8 +113,28 @@ pub fn init(cx: &mut App) {
 
     cx.observe_new(|workspace: &mut Workspace, _window, _cx| {
         workspace.register_action(TerminalView::deploy);
+        #[cfg(windows)]
+        workspace.register_action(open_external_terminal);
     })
     .detach();
+}
+
+#[cfg(windows)]
+fn open_external_terminal(
+    workspace: &mut Workspace,
+    _: &OpenExternalTerminal,
+    _window: &mut Window,
+    cx: &mut Context<Workspace>,
+) {
+    let root = workspace
+        .project()
+        .read(cx)
+        .active_project_directory(cx)
+        .unwrap_or_else(|| Arc::from(dirs::home_dir().unwrap_or_default()));
+    std::process::Command::new("wt.exe")
+        .current_dir(root)
+        .spawn()
+        .log_err();
 }
 
 pub struct BlockProperties {
