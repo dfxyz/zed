@@ -903,7 +903,7 @@
     "context": "!Terminal",
     "use_key_equivalents": true,
     "bindings": {
-      "ctrl-shift-c": "collab_panel::ToggleFocus",
+      "ctrl-shift-c": "terminal::OpenExternalTerminal",
     },
   },
   {
