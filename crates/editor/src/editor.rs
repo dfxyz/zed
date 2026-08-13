@@ -12350,6 +12350,9 @@ pub enum EditorEvent {
     InputHandled {
         utf16_range_to_replace: Option<Range<isize>>,
         text: Arc<str>,
+        /// Whether the text is an in-progress IME composition, which will be
+        /// replaced by the next composition update or by the committed text.
+        is_ime_composition: bool,
     },
     BufferRangesUpdated {
         buffer: Entity<Buffer>,

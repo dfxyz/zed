@@ -548,6 +548,7 @@ impl Editor {
                             cx.emit(EditorEvent::InputHandled {
                                 utf16_range_to_replace: None,
                                 text: text_to_insert.clone().into(),
+                                is_ime_composition: false,
                             });
 
                             self.replace_selections(&text_to_insert, None, window, cx, false);

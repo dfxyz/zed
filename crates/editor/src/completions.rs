@@ -977,6 +977,7 @@ impl Editor {
         cx.emit(EditorEvent::InputHandled {
             utf16_range_to_replace: None,
             text: new_text[common_prefix_len..].into(),
+            is_ime_composition: false,
         });
 
         let tx_id = self.transact(window, cx, |editor, window, cx| {
