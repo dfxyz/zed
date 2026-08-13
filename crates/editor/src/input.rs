@@ -38,6 +38,7 @@ impl Editor {
         cx.emit(EditorEvent::InputHandled {
             utf16_range_to_replace: relative_utf16_range.clone(),
             text: text.into(),
+            is_ime_composition: false,
         });
 
         if let Some(relative_utf16_range) = relative_utf16_range {
@@ -2861,6 +2862,7 @@ impl EntityInputHandler for Editor {
             cx.emit(EditorEvent::InputHandled {
                 utf16_range_to_replace: range_to_replace,
                 text: text.into(),
+                is_ime_composition: false,
             });
 
             if let Some(new_selected_ranges) = new_selected_ranges {
@@ -2944,6 +2946,7 @@ impl EntityInputHandler for Editor {
             cx.emit(EditorEvent::InputHandled {
                 utf16_range_to_replace: range_to_replace,
                 text: text.into(),
+                is_ime_composition: true,
             });
 
             if let Some(ranges) = ranges_to_replace {

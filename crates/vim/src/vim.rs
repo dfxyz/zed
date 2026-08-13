@@ -1153,12 +1153,17 @@ impl Vim {
             }
             EditorEvent::InputIgnored { text } => {
                 self.input_ignored(text.clone(), window, cx);
-                Vim::globals(cx).observe_insertion(text, None)
+                Vim::globals(cx).observe_insertion(text, None, false)
             }
             EditorEvent::InputHandled {
                 text,
                 utf16_range_to_replace: range_to_replace,
-            } => Vim::globals(cx).observe_insertion(text, range_to_replace.clone()),
+                is_ime_composition,
+            } => Vim::globals(cx).observe_insertion(
+                text,
+                range_to_replace.clone(),
+                *is_ime_composition,
+            ),
             EditorEvent::TransactionBegun { transaction_id } => {
                 self.transaction_begun(*transaction_id, window, cx)
             }
