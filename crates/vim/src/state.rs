@@ -260,6 +260,9 @@ pub struct VimGlobals {
     pub forced_motion: bool,
     pub stop_recording_after_next_action: bool,
     pub ignore_current_insertion: bool,
+    /// Whether an IME composition is in progress, so that the text it commits is
+    /// recorded in place of the composition's intermediate states.
+    pub recording_ime_composition: bool,
     pub recording_count: Option<usize>,
     pub recorded_count: Option<usize>,
     pub recording_actions: Vec<ReplayableAction>,
@@ -988,11 +991,32 @@ impl VimGlobals {
         }
     }
 
-    pub fn observe_insertion(&mut self, text: &Arc<str>, range_to_replace: Option<Range<isize>>) {
+    pub fn observe_insertion(
+        &mut self,
+        text: &Arc<str>,
+        range_to_replace: Option<Range<isize>>,
+        is_ime_composition: bool,
+    ) {
         if self.ignore_current_insertion {
             self.ignore_current_insertion = false;
             return;
         }
+        // The text of an in-progress IME composition is transient: it gets replaced by
+        // the next composition update and finally by the committed text. Recording it
+        // would make the replay insert those intermediate states, and their replacement
+        // ranges are relative to a cursor position that the replay doesn't reproduce
+        // (the IME may put the caret anywhere within the composition). So only the
+        // committed text is recorded, without a replacement range, since the composition
+        // it replaced was never inserted during the replay.
+        if is_ime_composition {
+            self.recording_ime_composition = !text.is_empty();
+            return;
+        }
+        let range_to_replace = if std::mem::take(&mut self.recording_ime_composition) {
+            None
+        } else {
+            range_to_replace
+        };
         if self.dot_recording {
             self.recording_actions.push(ReplayableAction::Insertion {
                 text: text.clone(),
