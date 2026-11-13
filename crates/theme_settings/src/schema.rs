@@ -1,7 +1,6 @@
 #![allow(missing_docs)]
 
 use gpui::{HighlightStyle, Hsla};
-use palette::FromColor;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 use settings::IntoGpui;
@@ -11,7 +10,7 @@ pub use settings::{
 };
 pub use settings::{FontWeightContent, WindowBackgroundContent};
 
-use theme::{StatusColorsRefinement, ThemeColorsRefinement};
+use theme::{StatusColorsRefinement, ThemeColorsRefinement, try_parse_color};
 
 const LIGHT_DIFF_HUNK_FILLED_OPACITY: f32 = 0.16;
 const LIGHT_DIFF_HUNK_HOLLOW_BACKGROUND_OPACITY: f32 = 0.08;
@@ -894,21 +893,6 @@ fn ensure_non_opaque(color: Hsla) -> Hsla {
 
 fn ensure_opaque(color: Hsla) -> Hsla {
     Hsla { a: 1.0, ..color }
-}
-
-fn try_parse_color(color: &str) -> anyhow::Result<Hsla> {
-    let rgba = gpui::Rgba::try_from(color)?;
-    let rgba = palette::rgb::Srgba::from_components((rgba.r, rgba.g, rgba.b, rgba.a));
-    let hsla = palette::Hsla::from_color(rgba);
-
-    let hsla = gpui::hsla(
-        hsla.hue.into_positive_degrees() / 360.,
-        hsla.saturation,
-        hsla.lightness,
-        hsla.alpha,
-    );
-
-    Ok(hsla)
 }
 
 #[cfg(test)]

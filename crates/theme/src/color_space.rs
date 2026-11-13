@@ -52,9 +52,9 @@ pub fn hsla_to_oklch(color: Hsla) -> Oklch {
     }
 }
 
-/// Converts an [`Oklch`] color back into [`Hsla`], using `alpha` for the
-/// resulting alpha channel. Channels outside the sRGB gamut are clamped.
-pub fn oklch_to_hsla(color: Oklch, alpha: f32) -> Hsla {
+/// Converts an [`Oklch`] color into [`Rgba`], using `alpha` for the resulting
+/// alpha channel. Channels outside the sRGB gamut are clamped.
+pub(crate) fn oklch_to_rgba(color: Oklch, alpha: f32) -> Rgba {
     let oklch = palette::Oklch {
         l: color.l,
         chroma: color.chroma,
@@ -62,12 +62,18 @@ pub fn oklch_to_hsla(color: Oklch, alpha: f32) -> Hsla {
     };
     let rgba: Srgba = Srgba::from_linear(LinSrgba::from_color(oklch));
     let (red, green, blue, _) = rgba.into_components();
-    Hsla::from(Rgba {
+    Rgba {
         r: red.clamp(0.0, 1.0),
         g: green.clamp(0.0, 1.0),
         b: blue.clamp(0.0, 1.0),
         a: alpha,
-    })
+    }
+}
+
+/// Converts an [`Oklch`] color back into [`Hsla`], using `alpha` for the
+/// resulting alpha channel. Channels outside the sRGB gamut are clamped.
+pub fn oklch_to_hsla(color: Oklch, alpha: f32) -> Hsla {
+    Hsla::from(oklch_to_rgba(color, alpha))
 }
 
 fn hsla_to_linear(color: Hsla) -> LinSrgba {

@@ -124,7 +124,7 @@ impl JsonSchema for ThemeColor {
         use schemars::json_schema;
         json_schema!({
             "type": "string",
-            "pattern": "^#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$",
+            "pattern": r"^(#([0-9a-fA-F]{3}|[0-9a-fA-F]{4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|oklch\(\s*[0-9.+-]+\s+[0-9.+-]+\s+[0-9.+-]+(?:\s*/\s*[0-9.+-]+)?\s*\))$",
             "format": "color"
         })
     }
